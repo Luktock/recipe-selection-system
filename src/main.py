@@ -51,6 +51,7 @@ def main():
         print("5. Add recipe")
         print("6. Edit recipe")
         print("7. Delete recipe")
+        print("8. Performance test")
         print("9. Export updated CSV files")
         print("0. Exit")
 
@@ -61,7 +62,9 @@ def main():
 
         elif choice == "2":
             show_recipe_details(recipes)
-
+        
+        elif choice == "8":
+            print("Performance test is not implemented yet.")
 
         elif choice == "9":
             save_recipes(recipes)
