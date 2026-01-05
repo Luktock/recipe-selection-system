@@ -5,6 +5,33 @@ def load_recipes():
     recipes = pd.read_csv(file_path)
     return recipes
 
+def show_recipe_details(recipes):
+    recipe_id = input("Enter recipe ID: ")
+
+    if not recipe_id.isdigit():
+        print("Invalid ID.")
+        return
+
+    recipe_id = int(recipe_id)
+    recipe = recipes[recipes["id"] == recipe_id]
+
+    if recipe.empty:
+        print("Recipe not found.")
+        return
+
+    recipe = recipe.iloc[0]
+
+    print("\nRecipe Details")
+    print(f"Name: {recipe['name']}")
+    print(f"Category: {recipe['category']}")
+    print(f"Price: €{recipe['price']}")
+    print(f"Cooking time: {recipe['time_min']} minutes")
+    print(f"Ingredients: {recipe['ingredients']}")
+    print(f"Steps: {recipe['steps']}")
+ 
+
+
+
 def save_recipes(recipes):
     file_path = "data/recipes_updated.csv"
     recipes.to_csv(file_path, index=False)
@@ -31,6 +58,10 @@ def main():
 
         if choice == "1":
             print(recipes[["id", "name", "category", "price", "time_min"]])
+
+        elif choice == "2":
+            show_recipe_details(recipes)
+
 
         elif choice == "9":
             save_recipes(recipes)
