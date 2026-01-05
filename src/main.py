@@ -58,3 +58,39 @@ def main():
     print(f"Number of recipes loaded: {len(recipes)}")
 
     while True:
+        print("\nMain Menu")
+        print("1. View all recipes")
+        print("2. Order a recipe")
+        print("3. Search recipes")
+        print("4. Sort recipes")
+        print("5. Add recipe")
+        print("6. Edit recipe")
+        print("7. Delete recipe")
+        print("8. Performance test")
+        print("9. Export updated CSV files")
+        print("0. Exit")
+
+        choice = input("Select an option: ")
+
+        if choice == "1":
+            print(recipes[["id", "name", "category", "price", "time_min"]])
+
+        elif choice == "2":
+            show_recipe_details(recipes)
+
+        elif choice == "8":
+            run_performance_test(recipes)
+
+        elif choice == "9":
+            save_recipes(recipes)
+
+        elif choice == "0":
+            print("Goodbye!")
+            break
+
+        else:
+            print("This feature is not implemented yet.")
+
+
+if __name__ == "__main__":
+    main()
