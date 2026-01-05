@@ -1,0 +1,7 @@
+id,name,category,price,time_min,ingredients,steps
+1,Pasta Aglio e Olio,main,6.5,15,garlic;pasta;olive oil;chili,"Cook pasta. Gently fry garlic and chili in olive oil. Mix together."
+2,Chicken Soup,soup,5.0,40,chicken;carrot;onion;celery;salt,"Simmer chicken and vegetables until tender. Season and serve."
+3,Greek Salad,starter,4.5,10,tomato;cucumber;feta;olive oil;oregano,"Chop ingredients and mix with olive oil and oregano."
+4,Pancakes,dessert,3.0,20,flour;milk;eggs;sugar;butter,"Mix batter, cook in pan, serve warm."
+5,Fried Rice,main,7.5,25,rice;egg;soy sauce;peas;carrot;onion,"Stir-fry vegetables, add rice and egg, season with soy sauce."
+6,Omelette,main,2.5,8,eggs;cheese;salt;pepper,"Beat eggs, cook in pan, add cheese, fold and serve."
