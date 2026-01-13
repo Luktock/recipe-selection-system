@@ -294,55 +294,6 @@ class User:
         self.recipes = sorted_recipes
 
 #=====================================================================================================
-                #   SAMPLE DATA  
-def load_sample_recipes(user):
-    """Load some example recipes into the system"""
-    
-    recipe1 = Recipe(
-        name="Tomato Soup",
-        category="soup",
-        price=5.50,
-        cooking_time=25,
-        ingredients=["Tomatoes", "Onion", "Garlic", "Vegetable broth", "Cream"],
-        steps=["Chop vegetables", "Sauté onion and garlic", "Add tomatoes and broth", 
-               "Simmer for 15 minutes", "Blend and add cream"]
-    )
-    
-    recipe2 = Recipe(
-        name="Caesar Salad",
-        category="starter",
-        price=8.00,
-        cooking_time=10,
-        ingredients=["Romaine lettuce", "Parmesan cheese", "Croutons", "Caesar dressing"],
-        steps=["Wash and chop lettuce", "Add croutons and cheese", "Toss with dressing"]
-    )
-    
-    recipe3 = Recipe(
-        name="Grilled Chicken",
-        category="main",
-        price=12.00,
-        cooking_time=30,
-        ingredients=["Chicken breast", "Olive oil", "Lemon", "Herbs", "Salt", "Pepper"],
-        steps=["Marinate chicken with oil and herbs", "Preheat grill", 
-               "Grill for 15 minutes each side", "Squeeze lemon on top"]
-    )
-    
-    recipe4 = Recipe(
-        name="Chocolate Cake",
-        category="dessert",
-        price=15.00,
-        cooking_time=45,
-        ingredients=["Flour", "Sugar", "Cocoa powder", "Eggs", "Butter", "Milk"],
-        steps=["Mix dry ingredients", "Beat eggs and butter", "Combine all ingredients",
-               "Pour into pan", "Bake at 350°F for 35 minutes"]
-    )
-    
-    user.add_recipe(recipe1)
-    user.add_recipe(recipe2)
-    user.add_recipe(recipe3)
-    user.add_recipe(recipe4)
-
-#=====================================================================================================
             #   ADD NEW RECIPE 
 def add_new_recipe_interactive(user):
     """Add a new recipe through user input"""
