@@ -378,13 +378,35 @@ def display_menu():
     print("3. Add New Recipe")
     print("4. Edit Recipe")
     print("5. Delete Recipe")
-    print("6. Search by Category")
+    print("6. Search recipes (name / category / ingredient)")
     print("7. Sort Recipes")
     print("8. Export recipes to CSV")
     print("9. Performance test")
     print("10. Exit")
 
     print("="*50)
+
+def search_by_name(user, term: str):
+    term = term.strip().lower()
+    results = [r for r in user.recipes if term in r.name.lower()]
+    return results
+
+def search_by_ingredient(user, ingredient: str, exclude: str = None):
+    ingredient = ingredient.strip().lower()
+    exclude_term = exclude.strip().lower() if exclude else None
+
+    results = []
+    for r in user.recipes:
+        ing_list = [i.lower() for i in r.ingredients]
+        has_include = any(ingredient in i for i in ing_list)
+        has_exclude = any(exclude_term in i for i in ing_list) if exclude_term else False
+
+        if has_include and not has_exclude:
+            results.append(r)
+
+    return results
+
+
 
 
 def main():
@@ -408,17 +430,15 @@ def main():
 
 
     
-    # Main program loop
+        # Main program loop
     while True:
         display_menu()
-        choice = input("Enter your choice (1-10): ")
-        
+        choice = input("Enter your choice (1-10): ").strip()
+
         if choice == "1":
-            # View all recipes
             user.display_all_recipes()
-        
+
         elif choice == "2":
-            # View recipe details
             user.display_all_recipes()
             try:
                 index = int(input("Enter recipe number to view details: ")) - 1
@@ -428,70 +448,95 @@ def main():
                     print("❌ Invalid recipe number!")
             except ValueError:
                 print("❌ Please enter a valid number!")
-        
+
         elif choice == "3":
-            # Add new recipe
             add_new_recipe_interactive(user)
-        
+
         elif choice == "4":
-            # Edit recipe
             user.display_all_recipes()
             try:
                 index = int(input("Enter recipe number to edit: ")) - 1
                 user.edit_recipe(index)
             except ValueError:
                 print("❌ Please enter a valid number!")
-        
+
         elif choice == "5":
-            # Delete recipe
             user.display_all_recipes()
             try:
                 index = int(input("Enter recipe number to delete: ")) - 1
                 user.delete_recipe(index)
             except ValueError:
                 print("❌ Please enter a valid number!")
-        
+
         elif choice == "6":
-            # Search by category
-            print("\nAvailable categories: soup, starter, main, dessert")
-            category = input("Enter category: ")
-            user.search_by_category(category)
-        
+            print("\nSearch options:")
+            print("1. By name")
+            print("2. By category")
+            print("3. By ingredient")
+            print("4. Ingredient include X but NOT Y")
+            search_choice = input("Choose (1-4): ").strip()
+
+            if search_choice == "1":
+                term = input("Enter name keyword: ")
+                results = search_by_name(user, term)
+
+            elif search_choice == "2":
+                print("\nAvailable categories: soup, starter, main, dessert")
+                category = input("Enter category: ")
+                user.search_by_category(category)
+                results = None  # already printed inside method
+
+            elif search_choice == "3":
+                ing = input("Enter ingredient keyword: ")
+                results = search_by_ingredient(user, ing)
+
+            elif search_choice == "4":
+                ing = input("Include ingredient keyword: ")
+                ex = input("Exclude ingredient keyword: ")
+                results = search_by_ingredient(user, ing, exclude=ex)
+
+            else:
+                print("❌ Invalid search choice.")
+                results = None
+
+            # Print results (only for name/ingredient searches)
+            if results is not None:
+                if results:
+                    print("\nResults:")
+                    for r in results:
+                        print(f"- {r.name} ({r.category}) - ${r.price:.2f}, {r.cooking_time} min")
+                else:
+                    print("No recipes found.")
+
         elif choice == "7":
-            # Sort recipes
             print("\nSort by:")
             print("1. Price")
             print("2. Cooking Time")
-            sort_choice = input("Enter choice (1-2): ")
-            
+            sort_choice = input("Enter choice (1-2): ").strip()
+
             print("\nUse logical filter? (Cheap AND Quick recipes first)")
             print("Filter: price ≤ $10 AND cooking_time ≤ 30 minutes")
             print("1. Yes (with filter)")
             print("2. No (regular sort)")
-            filter_choice = input("Enter choice (1-2): ")
-            
+            filter_choice = input("Enter choice (1-2): ").strip()
+
             print("\nSorting method:")
             print("1. Loop-based (Bubble Sort)")
             print("2. Recursion-based (Merge Sort)")
-            method_choice = input("Enter choice (1-2): ")
-            
+            method_choice = input("Enter choice (1-2): ").strip()
+
             if sort_choice == "1":
-                user.sort_recipes(
-                    "price",
-                    use_recursion=(method_choice == "2"),
-                    use_logical_filter=(filter_choice == "1")
-                )
+                user.sort_recipes("price",
+                                  use_recursion=(method_choice == "2"),
+                                  use_logical_filter=(filter_choice == "1"))
             elif sort_choice == "2":
-                user.sort_recipes(
-                    "cooking_time",
-                    use_recursion=(method_choice == "2"),
-                    use_logical_filter=(filter_choice == "1")
-                )
+                user.sort_recipes("cooking_time",
+                                  use_recursion=(method_choice == "2"),
+                                  use_logical_filter=(filter_choice == "1"))
             else:
                 print("❌ Invalid choice!")
 
         elif choice == "8":
-            # Export recipes to CSV
             try:
                 from io_csv import save_user_recipes_to_csv
                 save_user_recipes_to_csv(user, "data/recipes_export.csv")
@@ -505,16 +550,12 @@ def main():
         elif choice == "10":
             print("\n👋 Thank you for using the Recipe Selection System!")
             break
-            
-            # Exit program
-            print("\n👋 Thank you for using the Recipe Selection System!")
-            break
 
-        
         else:
             print("\n❌ Invalid choice! Please enter 1-10.")
-        
+
         input("\nPress Enter to continue...")
+
 
 #=====================================================================================================
                     #  RUN PROGRAM  
