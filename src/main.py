@@ -8,13 +8,15 @@ import time
 class Recipe:
     """Stores information about a single recipe"""
     
-    def __init__(self, name, category, price, cooking_time, ingredients, steps):
+    def __init__(self, name, category, price, cooking_time, ingredients, steps, rating=0.0):
         self.name = name
         self.category = category  # soup, starter, main, dessert
         self.price = price  # estimated price in dollars
         self.cooking_time = cooking_time  # in minutes
         self.ingredients = ingredients  # list of ingredients
         self.steps = steps  # cooking instructions
+        self.rating = rating
+
     
     def display(self):
         """Print recipe details in a nice format"""
@@ -24,6 +26,7 @@ class Recipe:
         print(f"Category: {self.category}")
         print(f"Price: ${self.price:.2f}")
         print(f"Cooking Time: {self.cooking_time} minutes")
+        print(f"Rating: {self.rating:.1f}/5")
         print(f"\nIngredients:")
         for ingredient in self.ingredients:
             print(f"  - {ingredient}")
@@ -199,7 +202,7 @@ class User:
         print(f"ALL RECIPES ({len(self.recipes)} total)")
         print(f"{'='*50}")
         for i, recipe in enumerate(self.recipes, 1):
-            print(f"{i}. {recipe.name} ({recipe.category}) - ${recipe.price:.2f}, {recipe.cooking_time} min")
+            print(f"{i}. {recipe.name} ({recipe.category}) - ${recipe.price:.2f}, {recipe.cooking_time} min, ⭐ {recipe.rating:.1f}/5")
         print(f"{'='*50}\n")
     
     def search_by_category(self, category):
@@ -252,12 +255,21 @@ class User:
             
             if sorted_filtered:
                 print("\n✓ MATCHES FILTER (Cheap AND Quick):")
-                for i, recipe in enumerate(sorted_filtered, 1):
+                for i, recipe in enumerate(sorted_recipes, 1):
                     value = getattr(recipe, sort_by)
-                    if sort_by == "price":
-                        print(f"  {i}. {recipe.name} - ${value:.2f}, {recipe.cooking_time} min")
-                    else:
-                        print(f"  {i}. {recipe.name} - {value} min, ${recipe.price:.2f}")
+
+                if sort_by == "price":
+                    print(f"{i}. {recipe.name} - ${value:.2f}")
+
+                elif sort_by == "cooking_time":
+                    print(f"{i}. {recipe.name} - {value} min")
+
+                elif sort_by == "rating":
+                    print(f"{i}. {recipe.name} - ⭐ {value:.1f}/5")
+
+                else:
+                    print(f"{i}. {recipe.name} - {value}")
+
             
             if sorted_not_filtered:
                 print("\n○ Does not match filter:")
@@ -381,8 +393,10 @@ def display_menu():
     print("6. Search recipes (name / category / ingredient)")
     print("7. Sort Recipes")
     print("8. Export recipes to CSV")
-    print("9. Performance test")
-    print("10. Exit")
+    print("9. Rate a recipe")
+    print("10. Performance test")
+    print("11. Exit")
+
 
     print("="*50)
 
@@ -407,6 +421,30 @@ def search_by_ingredient(user, ingredient: str, exclude: str = None):
     return results
 
 
+def rate_recipe(user):
+    """Let user rate a recipe (0 to 5)."""
+    if not user.recipes:
+        print("⚠️ No recipes available to rate.")
+        return
+
+    user.display_all_recipes()
+
+    try:
+        index = int(input("Enter recipe number to rate: ")) - 1
+        if not (0 <= index < len(user.recipes)):
+            print("❌ Invalid recipe number!")
+            return
+
+        rating = float(input("Enter rating (0-5): "))
+        if rating < 0 or rating > 5:
+            print("❌ Rating must be between 0 and 5.")
+            return
+
+        user.recipes[index].rating = rating
+        print(f"✅ Rated '{user.recipes[index].name}' with {rating:.1f}/5")
+
+    except ValueError:
+        print("❌ Please enter a valid number.")
 
 
 def main():
@@ -433,7 +471,7 @@ def main():
         # Main program loop
     while True:
         display_menu()
-        choice = input("Enter your choice (1-10): ").strip()
+        choice = input("Enter your choice (1-11): ").strip()
 
         if choice == "1":
             user.display_all_recipes()
@@ -512,8 +550,8 @@ def main():
             print("\nSort by:")
             print("1. Price")
             print("2. Cooking Time")
-            sort_choice = input("Enter choice (1-2): ").strip()
-
+            print("3. Rating")
+            sort_choice = input("Enter choice (1-3): ").strip()
             print("\nUse logical filter? (Cheap AND Quick recipes first)")
             print("Filter: price ≤ $10 AND cooking_time ≤ 30 minutes")
             print("1. Yes (with filter)")
@@ -526,15 +564,29 @@ def main():
             method_choice = input("Enter choice (1-2): ").strip()
 
             if sort_choice == "1":
-                user.sort_recipes("price",
-                                  use_recursion=(method_choice == "2"),
-                                  use_logical_filter=(filter_choice == "1"))
+                user.sort_recipes(
+                        "price",
+                        use_recursion=(method_choice == "2"),
+                     use_logical_filter=(filter_choice == "1")
+                    )
+
             elif sort_choice == "2":
-                user.sort_recipes("cooking_time",
-                                  use_recursion=(method_choice == "2"),
-                                  use_logical_filter=(filter_choice == "1"))
+                user.sort_recipes(
+                    "cooking_time",
+                    use_recursion=(method_choice == "2"),
+                    use_logical_filter=(filter_choice == "1")
+                )
+
+            elif sort_choice == "3":
+                user.sort_recipes(
+                    "rating",
+                    use_recursion=(method_choice == "2"),
+                    use_logical_filter=(filter_choice == "1")
+                )
+
             else:
                 print("❌ Invalid choice!")
+
 
         elif choice == "8":
             try:
@@ -545,16 +597,22 @@ def main():
                 print("❌ Export failed:", e)
 
         elif choice == "9":
-            performance_test(user, sort_key="cooking_time", runs=500)
+            rate_recipe(user)
 
         elif choice == "10":
+            performance_test(user, sort_key="cooking_time", runs=500)
+
+        elif choice == "11":
             print("\n👋 Thank you for using the Recipe Selection System!")
             break
 
         else:
-            print("\n❌ Invalid choice! Please enter 1-10.")
+            print("\n❌ Invalid choice! Please enter 1-11.")
 
         input("\nPress Enter to continue...")
+
+
+
 
 
 #=====================================================================================================
