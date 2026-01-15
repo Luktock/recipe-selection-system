@@ -53,7 +53,7 @@ class LoopSorting(SortingAlgorithm):
     def sort(self, recipes, key):
         """Bubble sort using loops"""
         n = len(recipes)
-        result = recipes.copy()  # Don't modify original list
+        result = recipes.copy()  
         
         # Bubble sort algorithm using loops
         for i in range(n):
