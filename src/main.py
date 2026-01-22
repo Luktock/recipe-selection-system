@@ -393,9 +393,11 @@ def display_menu():
     print("6. Search recipes (name / category / ingredient)")
     print("7. Sort Recipes")
     print("8. Export recipes to CSV")
-    print("9. Rate a recipe")
-    print("10. Performance test")
-    print("11. Exit")
+    print("9. Import recipes from CSV")
+    print("10. Rate a recipe")
+    print("11. Performance test")
+    print("12. Exit")
+
 
 
     print("="*50)
@@ -471,7 +473,8 @@ def main():
         # Main program loop
     while True:
         display_menu()
-        choice = input("Enter your choice (1-11): ").strip()
+        choice = input("Enter your choice (1-12): ").strip()
+
 
         if choice == "1":
             user.display_all_recipes()
@@ -597,21 +600,30 @@ def main():
                 print("❌ Export failed:", e)
 
         elif choice == "9":
-            rate_recipe(user)
+            path = input("Enter path to CSV file to import: ").strip()
+            try:
+                from io_csv import import_recipes_into_user
+                added, skipped = import_recipes_into_user(user, path)
+                print(f"✅ Import successful. Added: {added}, Skipped duplicates: {skipped}")
+            except FileNotFoundError:
+                print("❌ File not found.")
+            except Exception as e:
+                print("❌ Import failed:", e)
 
         elif choice == "10":
-            performance_test(user, sort_key="cooking_time", runs=500)
+            rate_recipe(user)
 
         elif choice == "11":
+            performance_test(user, sort_key="cooking_time", runs=500)
+
+        elif choice == "12":
             print("\n👋 Thank you for using the Recipe Selection System!")
             break
 
         else:
-            print("\n❌ Invalid choice! Please enter 1-11.")
+            print("\n❌ Invalid choice! Please enter 1–12.")
 
         input("\nPress Enter to continue...")
-
-
 
 
 
