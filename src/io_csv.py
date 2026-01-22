@@ -84,3 +84,43 @@ def save_user_recipes_to_csv(user, csv_path: str) -> None:
                 "ingredients": ";".join(recipe.ingredients),
                 "steps": ";".join(recipe.steps),
             })
+
+#-----------------Import newrecipesfromadditionalCSVfiles--------------
+
+def import_recipes_into_user(user, csv_path: str, dedupe_by_name: bool = True):
+    """
+    Import recipes from an additional CSV file during runtime.
+    Recipes are appended to the existing user.recipes list.
+
+    Args:
+        user: main User object
+        csv_path: path to additional CSV file
+        dedupe_by_name: skip recipes with duplicate names (case-insensitive)
+
+    Returns:
+        (added_count, skipped_count)
+    """
+    # Import User class locally to avoid circular imports
+    from main import User
+
+    temp_user = User()
+    load_recipes_into_user(temp_user, csv_path)
+
+    if not dedupe_by_name:
+        user.recipes.extend(temp_user.recipes)
+        return len(temp_user.recipes), 0
+
+    existing_names = {r.name.strip().lower() for r in user.recipes}
+    added = 0
+    skipped = 0
+
+    for recipe in temp_user.recipes:
+        key = recipe.name.strip().lower()
+        if key in existing_names:
+            skipped += 1
+            continue
+        user.recipes.append(recipe)
+        existing_names.add(key)
+        added += 1
+
+    return added, skipped
