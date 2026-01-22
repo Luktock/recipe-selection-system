@@ -219,6 +219,82 @@ class User:
         for recipe in results:
             print(f"- {recipe.name} (${recipe.price:.2f}, {recipe.cooking_time} min)")
         print(f"{'='*50}\n")
+
+# (4) SEARCHING FUNCTIONS (Ramya)
+    def search_by_name(self, name_query):
+        """Search recipes by (partial) name match"""
+        if not self.recipes:
+            print("\n⚠️  No recipes available to search!")
+            return []
+
+        q = name_query.strip().lower()
+        results = [r for r in self.recipes if q in r.name.lower()]
+
+        if not results:
+            print(f"\n⚠️  No recipes found with name containing '{name_query}'.")
+            return []
+
+        print(f"\n{'='*50}")
+        print(f"SEARCH RESULTS (NAME CONTAINS: {name_query})")
+        print(f"{'='*50}")
+        for i, recipe in enumerate(results, 1):
+            print(f"{i}. {recipe.name} ({recipe.category}) - ${recipe.price:.2f}, {recipe.cooking_time} min")
+        print(f"{'='*50}\n")
+        return results
+
+    def search_by_ingredient(self, ingredient_query):
+        """Search recipes containing a specific ingredient (case-insensitive, partial match)"""
+        if not self.recipes:
+            print("\n⚠️  No recipes available to search!")
+            return []
+
+        q = ingredient_query.strip().lower()
+
+        def has_ingredient(recipe):
+            return any(q in ing.lower() for ing in recipe.ingredients)
+
+        results = [r for r in self.recipes if has_ingredient(r)]
+
+        if not results:
+            print(f"\n⚠️  No recipes found containing ingredient '{ingredient_query}'.")
+            return []
+
+        print(f"\n{'='*50}")
+        print(f"RECIPES CONTAINING: {ingredient_query}")
+        print(f"{'='*50}")
+        for i, recipe in enumerate(results, 1):
+            print(f"{i}. {recipe.name} ({recipe.category}) - ${recipe.price:.2f}, {recipe.cooking_time} min")
+        print(f"{'='*50}\n")
+        return results
+
+    def search_include_exclude_ingredients(self, include_ingredient, exclude_ingredient):
+        """Search recipes that include X but NOT Y (case-insensitive, partial match)."""
+        if not self.recipes:
+            print("\n⚠️  No recipes available to search!")
+            return []
+
+        inc = include_ingredient.strip().lower()
+        exc = exclude_ingredient.strip().lower()
+
+        def includes(recipe):
+            return any(inc in ing.lower() for ing in recipe.ingredients)
+
+        def excludes(recipe):
+            return all(exc not in ing.lower() for ing in recipe.ingredients)
+
+        results = [r for r in self.recipes if includes(r) and excludes(r)]
+
+        if not results:
+            print(f"\n⚠️  No recipes found that include '{include_ingredient}' but not '{exclude_ingredient}'.")
+            return []
+
+        print(f"\n{'='*50}")
+        print(f"RECIPES: include '{include_ingredient}' AND NOT '{exclude_ingredient}'")
+        print(f"{'='*50}")
+        for i, recipe in enumerate(results, 1):
+            print(f"{i}. {recipe.name} - Ingredients: {', '.join(recipe.ingredients)}")
+        print(f"{'='*50}\n")
+        return results
     
     def sort_recipes(self, sort_by, use_recursion=False, use_logical_filter=False):
         """Sort recipes using either loop or recursion algorithm"""
