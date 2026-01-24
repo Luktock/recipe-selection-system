@@ -85,7 +85,7 @@ def save_user_recipes_to_csv(user, csv_path: str) -> None:
                 "steps": ";".join(recipe.steps),
             })
 
-#-----------------Import newrecipesfromadditionalCSVfiles--------------
+#-----------------Import new recipes fromadditionalCSVfiles--------------
 
 def import_recipes_into_user(user, csv_path: str, dedupe_by_name: bool = True):
     """
