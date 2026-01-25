@@ -679,6 +679,10 @@ def main():
 
         elif choice == "9":
             path = input("Enter path to CSV file to import: ").strip()
+            if not path:
+                print("❌ Please enter a CSV file path (e.g. data/more_recipes.csv).")
+                continue
+
             try:
                 from io_csv import import_recipes_into_user
                 added, skipped = import_recipes_into_user(user, path)
