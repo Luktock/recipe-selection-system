@@ -331,20 +331,18 @@ class User:
             
             if sorted_filtered:
                 print("\n✓ MATCHES FILTER (Cheap AND Quick):")
-                for i, recipe in enumerate(sorted_recipes, 1):
+                for i, recipe in enumerate(sorted_filtered, 1):
                     value = getattr(recipe, sort_by)
 
-                if sort_by == "price":
-                    print(f"{i}. {recipe.name} - ${value:.2f}")
+                    if sort_by == "price":
+                        print(f"{i}. {recipe.name} - ${value:.2f}")
+                    elif sort_by == "cooking_time":
+                        print(f"{i}. {recipe.name} - {value} min")
+                    elif sort_by == "rating":
+                        print(f"{i}. {recipe.name} - ⭐ {value:.1f}/5")
+                    else:
+                        print(f"{i}. {recipe.name} - {value}")
 
-                elif sort_by == "cooking_time":
-                    print(f"{i}. {recipe.name} - {value} min")
-
-                elif sort_by == "rating":
-                    print(f"{i}. {recipe.name} - ⭐ {value:.1f}/5")
-
-                else:
-                    print(f"{i}. {recipe.name} - {value}")
 
             
             if sorted_not_filtered:
@@ -374,8 +372,12 @@ class User:
                 value = getattr(recipe, sort_by)
                 if sort_by == "price":
                     print(f"{i}. {recipe.name} - ${value:.2f}")
-                else:
+                elif sort_by == "cooking_time":
                     print(f"{i}. {recipe.name} - {value} min")
+                elif sort_by == "rating":
+                    print(f"{i}. {recipe.name} - ⭐ {value:.1f}/5")
+                else:
+                    print(f"{i}. {recipe.name} - {value}")
             print(f"{'='*50}\n")
         
         # Update internal list with sorted result
