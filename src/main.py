@@ -601,7 +601,7 @@ def main():
 
             if search_choice == "1":
                 term = input("Enter name keyword: ")
-                results = search_by_name(user, term)
+                results = user.search_by_name(term)
 
             elif search_choice == "2":
                 print("\nAvailable categories: soup, starter, main, dessert")
@@ -611,12 +611,14 @@ def main():
 
             elif search_choice == "3":
                 ing = input("Enter ingredient keyword: ")
-                results = search_by_ingredient(user, ing)
+                results = user.search_by_ingredient(ing)
+
 
             elif search_choice == "4":
                 ing = input("Include ingredient keyword: ")
                 ex = input("Exclude ingredient keyword: ")
-                results = search_by_ingredient(user, ing, exclude=ex)
+                results = user.search_include_exclude_ingredients(ing, ex)
+
 
             else:
                 print("❌ Invalid search choice.")
