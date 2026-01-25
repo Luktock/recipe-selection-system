@@ -423,35 +423,59 @@ def add_new_recipe_interactive(user):
     user.add_recipe(new_recipe)
 #================================================================================================
             # Performance function
-def performance_test(user, sort_key="cooking_time", runs=500):
-    """Simple timing comparison: Bubble Sort (loop) vs Merge Sort (recursion)."""
+def performance_test(user, sort_key="cooking_time", runs=300):
+    """Performance analysis: Bubble (loop) vs Merge (recursion) with 2 measurements."""
 
     if len(user.recipes) < 2:
         print("⚠️ Not enough recipes to run performance test.")
         return
 
-    # Bubble sort timing
-    start = time.time()
-    for _ in range(runs):
-        _ = user.loop_sorter.sort(user.recipes.copy(), sort_key)
-    bubble_time = time.time() - start
+    def time_sort(sort_func, data):
+        start = time.time()
+        for _ in range(runs):
+            _ = sort_func(data.copy(), sort_key)
+        return time.time() - start
 
-    # Merge sort timing
-    start = time.time()
-    for _ in range(runs):
-        _ = user.recursion_sorter.sort(user.recipes.copy(), sort_key)
-    merge_time = time.time() - start
+    base = user.recipes.copy()
 
-    print("\n" + "=" * 50)
-    print("PERFORMANCE TEST")
-    print("=" * 50)
-    print(f"Runs: {runs}, Sort key: {sort_key}")
-    print(f"Loop-based Bubble Sort:     {bubble_time:.6f} seconds")
-    print(f"Recursion-based Merge Sort: {merge_time:.6f} seconds")
+    # Measurement 1: original dataset
+    data_small = base
+
+    # Measurement 2: larger dataset (simulate complexity)
+    data_large = base * 50
+
+    bubble_small = time_sort(user.loop_sorter.sort, data_small)
+    merge_small = time_sort(user.recursion_sorter.sort, data_small)
+
+    bubble_large = time_sort(user.loop_sorter.sort, data_large)
+    merge_large = time_sort(user.recursion_sorter.sort, data_large)
+
+    print("\n" + "=" * 60)
+    print("PERFORMANCE ANALYSIS")
+    print("=" * 60)
+    print(f"Runs per test: {runs} | Sort key: {sort_key}")
+
+    print("\nMeasurement 1: small dataset")
+    print(f"n = {len(data_small)}")
+    print(f"  Bubble Sort (loop):     {bubble_small:.6f}s")
+    print(f"  Merge Sort  (recursion): {merge_small:.6f}s")
+
+    print("\nMeasurement 2: large dataset")
+    print(f"n = {len(data_large)}")
+    print(f"  Bubble Sort (loop):     {bubble_large:.6f}s")
+    print(f"  Merge Sort  (recursion): {merge_large:.6f}s")
+
     print("\nBig-O (theory):")
     print("- Bubble Sort: O(n^2)")
     print("- Merge Sort:  O(n log n)")
-    print("=" * 50 + "\n")
+
+    print("\nInterpretation:")
+    print("- For small datasets, overhead can make merge sort slower than bubble sort.")
+    print("- As dataset size grows, merge sort is expected to scale better (n log n) than bubble sort (n^2).")
+
+
+    print("=" * 60 + "\n")
+
 
 
 
@@ -670,7 +694,8 @@ def main():
             rate_recipe(user)
 
         elif choice == "11":
-            performance_test(user, sort_key="cooking_time", runs=500)
+            performance_test(user)
+
 
         elif choice == "12":
             print("\n👋 Thank you for using the Recipe Selection System!")
