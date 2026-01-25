@@ -18,6 +18,27 @@ def load_recipes_into_user(user, csv_path: str) -> None:
 
     df = pd.read_csv(file_path)
 
+    # --- Pandas data cleaning & normalization ---
+    df = df.replace("", pd.NA)
+
+    df = df.dropna(subset=["name", "category", "price", "cooking_time"])
+
+    df["name"] = df["name"].astype(str).str.strip()
+    df["category"] = df["category"].astype(str).str.strip().str.lower()
+
+    df["price"] = (
+        df["price"]
+        .astype(str)
+        .str.replace(",", ".", regex=False)
+        .astype(float)
+    )
+
+    df["cooking_time"] = df["cooking_time"].astype(int)
+
+    # Remove duplicate recipes by name (keep first)
+    df = df.drop_duplicates(subset=["name"])
+    # ------------------------------------------
+
     # Required columns (keep rating optional for backward compatibility)
     required = ["name", "category", "price", "cooking_time", "ingredients", "steps"]
     for col in required:
@@ -48,7 +69,7 @@ def load_recipes_into_user(user, csv_path: str) -> None:
                 rating_str = str(row["rating"]).strip().replace(",", ".")
                 rating = float(rating_str) if rating_str else 0.0
 
-            # Local import to keep current setup
+            # Local import to keep current setup (robust)
             try:
                 from main import Recipe
             except ImportError:
@@ -93,8 +114,11 @@ def import_recipes_into_user(user, csv_path: str, dedupe_by_name: bool = True):
     Import recipes from an additional CSV file during runtime.
     Returns: (added_count, skipped_count)
     """
-    # Keep your current approach (simple + works)
-    from main import User
+    # Robust import for User (same idea as Recipe)
+    try:
+        from main import User
+    except ImportError:
+        from src.main import User
 
     temp_user = User()
     load_recipes_into_user(temp_user, csv_path)
