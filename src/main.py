@@ -480,25 +480,29 @@ def display_menu():
 
     print("="*50)
 
-def search_by_name(user, term: str):
-    term = term.strip().lower()
-    results = [r for r in user.recipes if term in r.name.lower()]
-    return results
 
-def search_by_ingredient(user, ingredient: str, exclude: str = None):
-    ingredient = ingredient.strip().lower()
-    exclude_term = exclude.strip().lower() if exclude else None
+#We originally had duplicate search logic as both standalone functions and class methods.
+#We refactored this to keep all searching behavior inside the User class to avoid redundancy 
+#and ensure a single source of truth
+#def search_by_name(user, term: str):
+    #term = term.strip().lower()
+    #results = [r for r in user.recipes if term in r.name.lower()]
+    #return results
 
-    results = []
-    for r in user.recipes:
-        ing_list = [i.lower() for i in r.ingredients]
-        has_include = any(ingredient in i for i in ing_list)
-        has_exclude = any(exclude_term in i for i in ing_list) if exclude_term else False
+#def search_by_ingredient(user, ingredient: str, exclude: str = None):
+    #ingredient = ingredient.strip().lower()
+    #exclude_term = exclude.strip().lower() if exclude else None
 
-        if has_include and not has_exclude:
-            results.append(r)
+    #results = []
+    #for r in user.recipes:
+        #ing_list = [i.lower() for i in r.ingredients]
+        #has_include = any(ingredient in i for i in ing_list)
+        #has_exclude = any(exclude_term in i for i in ing_list) if exclude_term else False
 
-    return results
+        #if has_include and not has_exclude:
+            #results.append(r)
+
+    #return results
 
 
 def rate_recipe(user):

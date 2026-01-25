@@ -9,42 +9,48 @@ import pandas as pd
 def load_recipes_into_user(user, csv_path: str) -> None:
     """
     Load recipes from CSV file into user's recipe list (using pandas).
-    Each row must contain: name, category, price, cooking_time, ingredients, steps
+    Required columns: name, category, price, cooking_time, ingredients, steps
+    Optional column: rating
     """
     file_path = Path(csv_path)
     if not file_path.exists():
         raise FileNotFoundError(f"CSV file not found: {csv_path}")
 
-    # Read CSV with pandas
     df = pd.read_csv(file_path)
 
-    # Basic validation: required columns
+    # Required columns (keep rating optional for backward compatibility)
     required = ["name", "category", "price", "cooking_time", "ingredients", "steps"]
     for col in required:
         if col not in df.columns:
             raise KeyError(f"Missing required column '{col}' in CSV: {csv_path}")
 
-    # Iterate rows as dictionaries (simple)
+    has_rating = "rating" in df.columns  # optional
+
     for row_number, row in enumerate(df.to_dict(orient="records"), start=2):
         try:
             name = str(row["name"]).strip()
             category = str(row["category"]).strip()
 
-            # Convert price (also supports comma decimal)
+            # Convert price (supports comma decimals)
             price_str = str(row["price"]).strip().replace(",", ".")
             price = float(price_str)
 
             # Convert cooking time
             cooking_time = int(str(row["cooking_time"]).strip())
 
-            # Ingredients / steps split by ';' (remove empty entries)
+            # Split ingredients / steps by ';'
             ingredients = [x.strip() for x in str(row["ingredients"]).split(";") if x.strip()]
             steps = [x.strip() for x in str(row["steps"]).split(";") if x.strip()]
 
-            # Import Recipe class here to avoid circular imports (keep your current setup)
-            from main import Recipe
+            # Optional rating (default 0.0 if missing/empty)
+            rating = 0.0
+            if has_rating:
+                rating_str = str(row["rating"]).strip().replace(",", ".")
+                rating = float(rating_str) if rating_str else 0.0
 
-            recipe = Recipe(name, category, price, cooking_time, ingredients, steps)
+            # Local import to keep current setup
+            from main import Recipe
+            recipe = Recipe(name, category, price, cooking_time, ingredients, steps, rating=rating)
             user.add_recipe(recipe)
 
         except (ValueError, KeyError, TypeError) as e:
@@ -56,13 +62,13 @@ def save_user_recipes_to_csv(user, csv_path: str) -> None:
     """
     Save the user's recipes to a CSV file.
 
-    CSV columns:
-    name,category,price,cooking_time,ingredients,steps
+    Columns:
+    name,category,price,cooking_time,ingredients,steps,rating
     """
     file_path = Path(csv_path)
 
     with file_path.open(mode="w", encoding="utf-8", newline="") as file:
-        fieldnames = ["name", "category", "price", "cooking_time", "ingredients", "steps"]
+        fieldnames = ["name", "category", "price", "cooking_time", "ingredients", "steps", "rating"]
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -74,16 +80,14 @@ def save_user_recipes_to_csv(user, csv_path: str) -> None:
                 "cooking_time": recipe.cooking_time,
                 "ingredients": ";".join(recipe.ingredients),
                 "steps": ";".join(recipe.steps),
+                "rating": recipe.rating,  # persist ratings
             })
 
 
 def import_recipes_into_user(user, csv_path: str, dedupe_by_name: bool = True):
     """
     Import recipes from an additional CSV file during runtime.
-    Recipes are appended to the existing user.recipes list.
-
-    Returns:
-        (added_count, skipped_count)
+    Returns: (added_count, skipped_count)
     """
     # Keep your current approach (simple + works)
     from main import User
