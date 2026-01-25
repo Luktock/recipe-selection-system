@@ -219,81 +219,166 @@ class User:
             print(f"- {recipe.name} (${recipe.price:.2f}, {recipe.cooking_time} min)")
         print(f"{'='*50}\n")
 
+# =========================================================================================================== 
 # (4) SEARCHING FUNCTIONS (Ramya)
-    def search_by_name(self, name_query):
-        """Search recipes by (partial) name match"""
-        if not self.recipes:
-            print("\n⚠️  No recipes available to search!")
-            return []
 
+    def search_by_name(self, name_query):
+        """Search recipes by (partial) recipe name."""
         q = name_query.strip().lower()
         results = [r for r in self.recipes if q in r.name.lower()]
 
         if not results:
-            print(f"\n⚠️  No recipes found with name containing '{name_query}'.")
+            print(f"\n⚠️ No recipes found with name containing '{name_query}'.")
             return []
 
-        print(f"\n{'='*50}")
-        print(f"SEARCH RESULTS (NAME CONTAINS: {name_query})")
-        print(f"{'='*50}")
-        for i, recipe in enumerate(results, 1):
-            print(f"{i}. {recipe.name} ({recipe.category}) - ${recipe.price:.2f}, {recipe.cooking_time} min")
-        print(f"{'='*50}\n")
+        print("\n" + "=" * 50)
+        print(f"RECIPES MATCHING NAME: {name_query}")
+        print("=" * 50)
+        for r in results:
+            print(f"- {r.name} ({r.category})")
+        print("=" * 50)
         return results
 
-    def search_by_ingredient(self, ingredient_query):
-        """Search recipes containing a specific ingredient (case-insensitive, partial match)"""
-        if not self.recipes:
-            print("\n⚠️  No recipes available to search!")
-            return []
 
-        q = ingredient_query.strip().lower()
-
-        def has_ingredient(recipe):
-            return any(q in ing.lower() for ing in recipe.ingredients)
-
-        results = [r for r in self.recipes if has_ingredient(r)]
+    def search_by_ingredient(self, ingredient):
+        """Search recipes containing a specific ingredient."""
+        key = ingredient.lower()
+        results = [r for r in self.recipes
+                   if any(key in ing.lower() for ing in r.ingredients)]
 
         if not results:
-            print(f"\n⚠️  No recipes found containing ingredient '{ingredient_query}'.")
+            print(f"\n⚠️ No recipes found containing '{ingredient}'.")
             return []
 
-        print(f"\n{'='*50}")
-        print(f"RECIPES CONTAINING: {ingredient_query}")
-        print(f"{'='*50}")
-        for i, recipe in enumerate(results, 1):
-            print(f"{i}. {recipe.name} ({recipe.category}) - ${recipe.price:.2f}, {recipe.cooking_time} min")
-        print(f"{'='*50}\n")
+        print("\n" + "=" * 50)
+        print(f"RECIPES CONTAINING INGREDIENT: {ingredient}")
+        print("=" * 50)
+        for r in results:
+            print(f"- {r.name}")
+        print("=" * 50)
         return results
 
-    def search_include_exclude_ingredients(self, include_ingredient, exclude_ingredient):
-        """Search recipes that include X but NOT Y (case-insensitive, partial match)."""
-        if not self.recipes:
-            print("\n⚠️  No recipes available to search!")
-            return []
 
-        inc = include_ingredient.strip().lower()
-        exc = exclude_ingredient.strip().lower()
+    def search_include_exclude_ingredients(self, include_ing, exclude_ing):
+        """Search recipes that include X but NOT Y."""
+        inc = include_ing.lower()
+        exc = exclude_ing.lower()
 
-        def includes(recipe):
-            return any(inc in ing.lower() for ing in recipe.ingredients)
-
-        def excludes(recipe):
-            return all(exc not in ing.lower() for ing in recipe.ingredients)
-
-        results = [r for r in self.recipes if includes(r) and excludes(r)]
+        results = [
+            r for r in self.recipes
+            if any(inc in ing.lower() for ing in r.ingredients)
+            and all(exc not in ing.lower() for ing in r.ingredients)
+        ]
 
         if not results:
-            print(f"\n⚠️  No recipes found that include '{include_ingredient}' but not '{exclude_ingredient}'.")
+            print(f"\n⚠️ No recipes include '{include_ing}' and exclude '{exclude_ing}'.")
             return []
 
-        print(f"\n{'='*50}")
-        print(f"RECIPES: include '{include_ingredient}' AND NOT '{exclude_ingredient}'")
-        print(f"{'='*50}")
-        for i, recipe in enumerate(results, 1):
-            print(f"{i}. {recipe.name} - Ingredients: {', '.join(recipe.ingredients)}")
-        print(f"{'='*50}\n")
+        print("\n" + "=" * 50)
+        print(f"RECIPES: INCLUDE '{include_ing}' AND NOT '{exclude_ing}'")
+        print("=" * 50)
+        for r in results:
+            print(f"- {r.name}")
+        print("=" * 50)
         return results
+
+     # =========================================================================================================
+    #  INGREDIENT AVAILABILITY CHECK
+
+    def suggest_recipes_by_available_ingredients(self, available_ingredients):
+        """
+        Suggest recipes based on ingredients the user currently has.
+        A recipe is suggested ONLY if all required ingredients are available.
+        """
+
+        if not self.recipes:
+            print("\n⚠️ No recipes available.")
+            return []
+
+        # Normalize available ingredients
+        available = [ing.lower().strip() for ing in available_ingredients]
+
+        suggestions = []
+
+        for recipe in self.recipes:
+            recipe_ingredients = [ing.lower().strip() for ing in recipe.ingredients]
+
+            # Check if all recipe ingredients are available
+            if all(ing in available for ing in recipe_ingredients):
+                suggestions.append(recipe)
+
+        if not suggestions:
+            print("\n⚠️ No recipes can be prepared with the given ingredients.")
+            return []
+
+        print("\n" + "=" * 50)
+        print("RECIPES YOU CAN MAKE WITH AVAILABLE INGREDIENTS")
+        print("=" * 50)
+
+        for r in suggestions:
+            print(f"- {r.name} ({r.category})")
+
+        print("=" * 50)
+        return suggestions
+
+    # ===========================================================================================
+    # (5) LOGICAL VARIABLES & TRUTH TABLE (Ramya)
+
+    def logical_variables(self, recipe):
+        """
+        Logical variables:
+        P = Cheap (price ≤ 10)
+        Q = Quick (cooking_time ≤ 30)
+        """
+        P = recipe.price <= 10
+        Q = recipe.cooking_time <= 30
+        return P, Q
+
+
+    def evaluate_logical_expression(self, P, Q):
+        """Logical expression: P AND Q."""
+        return P and Q
+
+
+    def recipe_satisfies_rule(self, recipe):
+        """Check if recipe satisfies P AND Q."""
+        P, Q = self.logical_variables(recipe)
+        return self.evaluate_logical_expression(P, Q)
+
+
+    def search_by_logical_rule(self):
+        """Search recipes satisfying Cheap AND Quick rule."""
+        results = [r for r in self.recipes if self.recipe_satisfies_rule(r)]
+
+        if not results:
+            print("\n⚠️ No recipes satisfy the logical rule.")
+            return []
+
+        print("\n" + "=" * 50)
+        print("RECIPES SATISFYING LOGICAL RULE (Cheap AND Quick)")
+        print("=" * 50)
+        for r in results:
+            P, Q = self.logical_variables(r)
+            print(f"- {r.name} | Cheap={P}, Quick={Q}")
+        print("=" * 50)
+        return results
+
+
+    def display_truth_table(self):
+        """Display truth table for P AND Q."""
+        print("\n" + "=" * 50)
+        print("TRUTH TABLE FOR LOGICAL EXPRESSION")
+        print("Expression: P ∧ Q")
+        print("P: Cheap (price ≤ 10)")
+        print("Q: Quick (cooking_time ≤ 30)")
+        print("=" * 50)
+
+        print(f"{'P':<8}{'Q':<8}{'P ∧ Q':<8}")
+        print("-" * 24)
+        for P in [False, True]:
+            for Q in [False, True]:
+                print(f"{str(P):<8}{str(Q):<8}{str(P and Q):<8}")
+        print("=" * 50)
     
     def sort_recipes(self, sort_by, use_recursion=False, use_logical_filter=False):
         """Sort recipes using either loop or recursion algorithm"""
@@ -479,12 +564,6 @@ def performance_test(user, sort_key="cooking_time"):
     print("=" * 60 + "\n")
 
 
-
-
-
-
-
-
 #=====================================================================================================
             #   MAIN MENU 
 def display_menu():
@@ -503,7 +582,9 @@ def display_menu():
     print("9. Import recipes from CSV")
     print("10. Rate a recipe")
     print("11. Performance test")
-    print("12. Exit")
+    print("12. Show Truth Table (Logical Expression)")
+    print("13. Ingredient availability check")
+    print("14. Exit")
 
 
 
@@ -560,7 +641,7 @@ def main():
         # Main program loop
     while True:
         display_menu()
-        choice = input("Enter your choice (1-12): ").strip()
+        choice = input("Enter your choice (1-14): ").strip()
 
 
         if choice == "1":
@@ -706,8 +787,19 @@ def main():
             print("\n👋 Thank you for using the Recipe Selection System!")
             break
 
+        elif choice == "13":
+            print("\nEnter ingredients you currently have (comma-separated)")
+            user_input = input("Ingredients: ")
+            available = [i.strip() for i in user_input.split(",") if i.strip()]
+            user.suggest_recipes_by_available_ingredients(available)
+
+
+        elif choice == "14":
+           print("\n👋 Thank you for using the Recipe Selection System!")
+           break
+
         else:
-            print("\n❌ Invalid choice! Please enter 1–12.")
+            print("\n❌ Invalid choice! Please enter 1–14.")
 
         input("\nPress Enter to continue...")
 
