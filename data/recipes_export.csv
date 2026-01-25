@@ -1,3 +1,4 @@
 name,category,price,cooking_time,ingredients,steps,rating
 Tomato Soup,soup,5.5,25,Tomatoes;Onion;Garlic,Chop;Cook;Blend,0.0
-Caesar Salad,starter,8.0,10,Lettuce;Cheese,Wash;Mix,3.5
+Caesar Salad,starter,8.0,10,Lettuce;Cheese,Wash;Mix,0.0
+Wiener Schnitzel,main,12.5,30,"veal,flour,eggs,breadcrumbs,salt,pepper,butter,oil,lemon",Season meat with salt and pepper;Coat schnitzel in flour;Dip schnitzel into beaten eggs;Cover schnitzel with breadcrumbs;Heat oil and butter in pan;Fry schnitzel until golden on both sides;Drain excess fat;Serve with lemon slices,4.7
