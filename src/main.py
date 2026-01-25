@@ -481,30 +481,6 @@ def display_menu():
     print("="*50)
 
 
-#We originally had duplicate search logic as both standalone functions and class methods.
-#We refactored this to keep all searching behavior inside the User class to avoid redundancy 
-#and ensure a single source of truth
-#def search_by_name(user, term: str):
-    #term = term.strip().lower()
-    #results = [r for r in user.recipes if term in r.name.lower()]
-    #return results
-
-#def search_by_ingredient(user, ingredient: str, exclude: str = None):
-    #ingredient = ingredient.strip().lower()
-    #exclude_term = exclude.strip().lower() if exclude else None
-
-    #results = []
-    #for r in user.recipes:
-        #ing_list = [i.lower() for i in r.ingredients]
-        #has_include = any(ingredient in i for i in ing_list)
-        #has_exclude = any(exclude_term in i for i in ing_list) if exclude_term else False
-
-        #if has_include and not has_exclude:
-            #results.append(r)
-
-    #return results
-
-
 def rate_recipe(user):
     """Let user rate a recipe (0 to 5)."""
     if not user.recipes:
@@ -624,14 +600,6 @@ def main():
                 print("❌ Invalid search choice.")
                 results = None
 
-            # Print results (only for name/ingredient searches)
-            if results is not None:
-                if results:
-                    print("\nResults:")
-                    for r in results:
-                        print(f"- {r.name} ({r.category}) - ${r.price:.2f}, {r.cooking_time} min")
-                else:
-                    print("No recipes found.")
 
         elif choice == "7":
             print("\nSort by:")
