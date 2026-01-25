@@ -49,7 +49,11 @@ def load_recipes_into_user(user, csv_path: str) -> None:
                 rating = float(rating_str) if rating_str else 0.0
 
             # Local import to keep current setup
-            from main import Recipe
+            try:
+                from main import Recipe
+            except ImportError:
+                from src.main import Recipe
+
             recipe = Recipe(name, category, price, cooking_time, ingredients, steps, rating=rating)
             user.add_recipe(recipe)
 
