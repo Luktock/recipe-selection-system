@@ -1,3 +1,4 @@
-name,category,price,cooking_time,ingredients,steps
-Tomato Soup,soup,5.5,25,Tomatoes;Onion;Garlic,Chop;Cook;Blend
-Caesar Salad,starter,8.0,10,Lettuce;Cheese,Wash;Mix
+name,category,price,cooking_time,ingredients,steps,rating
+Tomato Soup,soup,5.5,25,Tomatoes;Onion;Garlic,Chop;Cook;Blend,0.0
+Caesar Salad,starter,8.0,10,Lettuce;Cheese,Wash;Mix,0.0
+Schnitzel,main,24.0,35,Veal;Breadcrumbs;Eggs;Flour;Salt ;Pepper,Pound the schnitzel thin;Season with salt;Dredge in flour;Dip in beaten egg;Coat with breadcrumbs;Fry in hot oil until golden,5.0
