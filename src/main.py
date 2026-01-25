@@ -3,8 +3,6 @@
 from abc import ABC, abstractmethod
 import time
 
-
-
                         #  RECIPE CLASS 
 class Recipe:
     """Stores information about a single recipe"""
@@ -423,7 +421,7 @@ def add_new_recipe_interactive(user):
     new_recipe = Recipe(name, category, price, cooking_time, ingredients, steps)
     user.add_recipe(new_recipe)
 #================================================================================================
-         # Performance function
+                                   # Performance function
 def performance_test(user, sort_key="cooking_time"):
     """Performance analysis: Bubble (loop) vs Merge (recursion) with 2 measurements."""
 
