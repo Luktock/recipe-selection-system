@@ -3,63 +3,54 @@
 
 import csv
 from pathlib import Path
+import pandas as pd
 
 
 def load_recipes_into_user(user, csv_path: str) -> None:
     """
-    Load recipes from CSV file into user's recipe list
-    
-    Args:
-        user: User object with add_recipe method
-        csv_path: Path to CSV file as string
-    
-    Raises:
-        FileNotFoundError: If CSV file does not exist
+    Load recipes from CSV file into user's recipe list (using pandas).
+    Each row must contain: name, category, price, cooking_time, ingredients, steps
     """
-    # Convert string path to Path object and check if file exists
     file_path = Path(csv_path)
     if not file_path.exists():
         raise FileNotFoundError(f"CSV file not found: {csv_path}")
-    
-    # Open and read CSV file
-    with file_path.open(mode='r', encoding='utf-8') as file:
-        csv_reader = csv.DictReader(file)
-        
-        # Process each row (skip header automatically with DictReader)
-        for row_number, row in enumerate(csv_reader, start=2):  # Start at 2 (row 1 is header)
-            try:
-                # Extract and clean data from CSV row
-                name = row['name'].strip()
-                category = row['category'].strip()
-                
-                # Convert price (handle comma as decimal separator)
-                price_str = row['price'].strip().replace(',', '.')
-                price = float(price_str)
-                
-                # Convert cooking time to integer
-                cooking_time = int(row['cooking_time'].strip())
-                
-                # Split ingredients by semicolon into list
-                ingredients_str = row['ingredients'].strip()
-                ingredients = [item.strip() for item in ingredients_str.split(';')]
-                
-                # Split steps by semicolon into list
-                steps_str = row['steps'].strip()
-                steps = [item.strip() for item in steps_str.split(';')]
-                
-                # Import Recipe class here to avoid circular imports
-                from main import Recipe
-                
-                # Create Recipe object
-                recipe = Recipe(name, category, price, cooking_time, ingredients, steps)
-                
-                # Add recipe to user
-                user.add_recipe(recipe)
-                
-            except (ValueError, KeyError) as e:
-                # Print warning and continue with next row
-                print(f"Warning: Invalid data in row {row_number}. Skipping. Error: {e}")
-                continue
+
+    # Read CSV with pandas
+    df = pd.read_csv(file_path)
+
+    # Basic validation: required columns
+    required = ["name", "category", "price", "cooking_time", "ingredients", "steps"]
+    for col in required:
+        if col not in df.columns:
+            raise KeyError(f"Missing required column '{col}' in CSV: {csv_path}")
+
+    # Iterate rows as dictionaries (simple)
+    for row_number, row in enumerate(df.to_dict(orient="records"), start=2):
+        try:
+            name = str(row["name"]).strip()
+            category = str(row["category"]).strip()
+
+            # Convert price (also supports comma decimal)
+            price_str = str(row["price"]).strip().replace(",", ".")
+            price = float(price_str)
+
+            # Convert cooking time
+            cooking_time = int(str(row["cooking_time"]).strip())
+
+            # Ingredients / steps split by ';' (remove empty entries)
+            ingredients = [x.strip() for x in str(row["ingredients"]).split(";") if x.strip()]
+            steps = [x.strip() for x in str(row["steps"]).split(";") if x.strip()]
+
+            # Import Recipe class here to avoid circular imports (keep your current setup)
+            from main import Recipe
+
+            recipe = Recipe(name, category, price, cooking_time, ingredients, steps)
+            user.add_recipe(recipe)
+
+        except (ValueError, KeyError, TypeError) as e:
+            print(f"Warning: Invalid data in row {row_number}. Skipping. Error: {e}")
+            continue
+
 
 def save_user_recipes_to_csv(user, csv_path: str) -> None:
     """
@@ -85,22 +76,16 @@ def save_user_recipes_to_csv(user, csv_path: str) -> None:
                 "steps": ";".join(recipe.steps),
             })
 
-#-----------------Import new recipes fromadditionalCSVfiles--------------
 
 def import_recipes_into_user(user, csv_path: str, dedupe_by_name: bool = True):
     """
     Import recipes from an additional CSV file during runtime.
     Recipes are appended to the existing user.recipes list.
 
-    Args:
-        user: main User object
-        csv_path: path to additional CSV file
-        dedupe_by_name: skip recipes with duplicate names (case-insensitive)
-
     Returns:
         (added_count, skipped_count)
     """
-    # Import User class locally to avoid circular imports
+    # Keep your current approach (simple + works)
     from main import User
 
     temp_user = User()
