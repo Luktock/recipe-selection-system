@@ -1,4 +1,4 @@
- # RECIPE SELECTION SYSTEM  
+                        # RECIPE SELECTION SYSTEM  
 #==================================================================
 from abc import ABC, abstractmethod
 import time
@@ -54,7 +54,8 @@ class LoopSorting(SortingAlgorithm):
         n = len(recipes)
         result = recipes.copy()  
         
-        # Bubble sort algorithm using loops
+
+                       # Bubble sort algorithm using loops
         for i in range(n):
             for j in range(0, n - i - 1):
                 # Compare adjacent elements
