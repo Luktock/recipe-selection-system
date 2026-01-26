@@ -785,8 +785,8 @@ def main():
 
 
         elif choice == "12":
-            print("\n👋 Thank you for using the Recipe Selection System!")
-            break
+            user.display_truth_table()
+
 
         elif choice == "13":
             print("\nEnter ingredients you currently have (comma-separated)")
