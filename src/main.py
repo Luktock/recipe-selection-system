@@ -286,38 +286,40 @@ class User:
      # =========================================================================================================
     #  INGREDIENT AVAILABILITY CHECK
 
-def suggest_recipes_by_available_ingredients(self, available_ingredients):
-    """
-    Suggest recipes if AT LEAST ONE ingredient matches.
-    """
+    def suggest_recipes_by_available_ingredients(self, available_ingredients):
+        """
+        Suggest recipes if AT LEAST ONE ingredient matches.
+        """
 
-    if not self.recipes:
-        print("\n⚠️ No recipes available.")
-        return []
+        if not self.recipes:
+            print("\n⚠️ No recipes available.")
+            return []
 
-    available = [ing.lower().strip() for ing in available_ingredients]
+        # Normalize available ingredients
+        available = [ing.lower().strip() for ing in available_ingredients]
 
-    suggestions = []
+        suggestions = []
 
-    for recipe in self.recipes:
-        recipe_ingredients = [ing.lower().strip() for ing in recipe.ingredients]
+        for recipe in self.recipes:
+            recipe_ingredients = [ing.lower().strip() for ing in recipe.ingredients]
 
-        if any(ing in available for ing in recipe_ingredients):
-            suggestions.append(recipe)
+            # AT LEAST ONE ingredient match
+            if any(ing in available for ing in recipe_ingredients):
+                suggestions.append(recipe)
 
-    if not suggestions:
-        print("\n⚠️ No recipes match the available ingredients.")
-        return []
+        if not suggestions:
+            print("\n⚠️ No recipes match the available ingredients.")
+            return []
 
-    print("\n" + "=" * 50)
-    print("RECIPES MATCHING AVAILABLE INGREDIENTS")
-    print("=" * 50)
+        print("\n" + "=" * 50)
+        print("RECIPES MATCHING AVAILABLE INGREDIENTS")
+        print("=" * 50)
 
-    for r in suggestions:
-        print(f"- {r.name} ({r.category})")
+        for r in suggestions:
+            print(f"- {r.name} ({r.category})")
 
-    print("=" * 50)
-    return suggestions
+        print("=" * 50)
+        return suggestions
 
 
 
