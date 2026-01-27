@@ -511,15 +511,15 @@ def add_new_recipe_interactive(user):
 def performance_test(user, sort_key="cooking_time"):
     """Performance analysis: Bubble (loop) vs Merge (recursion) with 2 measurements."""
 
-    if len(user.recipes) < 2:
-        print("⚠️ Not enough recipes to run performance test.")
+    if len(user.recipes) < 2:               # Need at least 2 recipes to compare    
+        print("⚠️ Not enough recipes to run performance test.")            
         return
 
-    def time_sort(sort_func, data, runs):
-        start = time.time()
-        for _ in range(runs):
-            _ = sort_func(data.copy(), sort_key)
-        return time.time() - start
+    def time_sort(sort_func, data, runs):                       #sort_func: sorting function to test # data: list of recipes to sort # runs: number of times to repeat sorting
+        start = time.time() #Start the stopwatch
+        for _ in range(runs):                                   #the sorting is executed runs times 
+            _ = sort_func(data.copy(), sort_key)                #Each time, it sorts a copy of the list
+        return time.time() - start                              #Return the total time taken by subtracting the start time from the current time
 
     base = user.recipes.copy()
 
