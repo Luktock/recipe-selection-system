@@ -286,7 +286,7 @@ class User:
      # =========================================================================================================
     #  INGREDIENT AVAILABILITY CHECK
 
- def suggest_recipes_by_available_ingredients(self, available_ingredients):
+def suggest_recipes_by_available_ingredients(self, available_ingredients):
     """
     Suggest recipes if AT LEAST ONE ingredient matches.
     """
