@@ -286,7 +286,7 @@ class User:
      # =========================================================================================================
     #  INGREDIENT AVAILABILITY CHECK
 
-    def suggest_recipes_by_available_ingredients(self, available_ingredients):
+ def suggest_recipes_by_available_ingredients(self, available_ingredients):
     """
     Suggest recipes if AT LEAST ONE ingredient matches.
     """
@@ -295,7 +295,6 @@ class User:
         print("\n⚠️ No recipes available.")
         return []
 
-    # Normalize available ingredients
     available = [ing.lower().strip() for ing in available_ingredients]
 
     suggestions = []
@@ -303,7 +302,6 @@ class User:
     for recipe in self.recipes:
         recipe_ingredients = [ing.lower().strip() for ing in recipe.ingredients]
 
-        # Check if at least ONE ingredient matches
         if any(ing in available for ing in recipe_ingredients):
             suggestions.append(recipe)
 
@@ -320,6 +318,7 @@ class User:
 
     print("=" * 50)
     return suggestions
+
 
 
     # ===========================================================================================
