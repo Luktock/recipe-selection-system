@@ -568,7 +568,7 @@ def performance_test(user, sort_key="cooking_time"):
 
 #=====================================================================================================
             #   MAIN MENU 
-def display_menu():
+def display_menu():                                                 #print menu options
     """Show the main menu options"""
     print("\n" + "="*50)
     print("     INTELLIGENT RECIPE SELECTION SYSTEM")
@@ -592,7 +592,7 @@ def display_menu():
 
     print("="*50)
 
-
+#rate recipe function
 def rate_recipe(user):
     """Let user rate a recipe (0 to 5)."""
     if not user.recipes:
@@ -618,7 +618,7 @@ def rate_recipe(user):
     except ValueError:
         print("❌ Please enter a valid number.")
 
-
+#main menu loop 
 def main():
     """Main program execution"""
 
@@ -626,21 +626,20 @@ def main():
     user = User()
 
     try:
-        from io_csv import load_recipes_into_user
-        load_recipes_into_user(user, "data/recipes.csv")
+        from io_csv import load_recipes_into_user                       #Load recipes at program start
+        load_recipes_into_user(user, "data/recipes.csv")                
         print("\n🍳 Welcome to the Recipe Selection System!")
         print(f"{len(user.recipes)} recipes loaded from CSV.\n")
-    except FileNotFoundError as e:
+    except FileNotFoundError as e:                                          #error handling for file not found
         print("\n⚠️ CSV file not found. Starting with empty recipe list.")
         print(e)
-    except Exception as e:
+    except Exception as e:                                                  #error handling for other exceptions
         print("\n⚠️ Error while loading recipes from CSV.")
         print(e)
 
 
 
-    
-        # Main program loop
+        # Main infinite program loop
     while True:
         display_menu()
         choice = input("Enter your choice (1-14): ").strip()
