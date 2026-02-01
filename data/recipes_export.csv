@@ -1,0 +1,15 @@
+name,category,price,cooking_time,ingredients,steps,rating
+Tomato Soup,soup,5.5,25,Tomatoes;Onion;Garlic,Chop;Cook;Blend,0.0
+Caesar Salad,starter,8.0,10,Lettuce;Cheese,Wash;Mix,0.0
+Vegetable Soup,soup,6.5,25,onion;carrot;potato;salt;pepper,Chop vegetables;Boil water;Add vegetables;Cook for 20 minutes;Season,0.0
+Chicken Salad,starter,9.0,15,chicken;lettuce;onion;olive oil;salt,Grill chicken;Chop vegetables;Mix ingredients;Add dressing,0.0
+Pasta Alfredo,main,11.5,30,pasta;cream;garlic;butter;cheese,Boil pasta;Prepare sauce;Mix pasta and sauce;Serve hot,0.0
+Grilled Cheese Sandwich,starter,5.0,10,bread;cheese;butter,Butter bread;Add cheese;Grill until golden,0.0
+Chicken Stir Fry,main,10.0,20,chicken;onion;bell pepper;soy sauce;oil,Heat oil;Add chicken;Add vegetables;Stir fry;Add sauce,0.0
+Mushroom Omelette,starter,4.5,8,eggs;mushroom;onion;salt;pepper,Beat eggs;Cook mushrooms;Add eggs;Fold omelette,0.0
+Beef Burger,main,12.0,25,beef;bun;lettuce;onion;cheese,Grill patty;Assemble burger;Serve,0.0
+Fruit Salad,dessert,6.0,10,apple;banana;orange;grapes,Chop fruits;Mix in bowl;Serve chilled,0.0
+Chocolate Pancakes,dessert,7.5,20,flour;milk;egg;cocoa powder;sugar,Prepare batter;Heat pan;Cook pancakes;Serve,0.0
+Garlic Rice,main,6.0,15,rice;garlic;butter;salt,Cook rice;Fry garlic;Mix with rice;Serve,5.0
+Wiener Schnitzel,main,12.5,30,veal cutlet;flour;eggs;breadcrumbs;salt;pepper;butter;oil;lemon,Season meat;Fry schnitzel,4.5
+Pasta Aglio e Olio,main,5.0,15,pasta;garlic;olive oil;chili;parsley,Boil pasta;Fry garlic;Mix everything,4.2
